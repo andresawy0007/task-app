@@ -2,10 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('equis');
-});
 
+Route::get('/tasks', function () {
+    return view('tasks');
+});
 Route::get('/login', function () {
-    return view('templates/equis');
+    return view('login');
 });
