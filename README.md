@@ -232,21 +232,6 @@ The following headers are required to authorize and process your request:
 - `Authorization: Bearer <your_access_token>`: Provides the necessary token for user authentication.
   - Example: `Bearer 4|MXGTDt5Uh6bfwrrjMRBn8x5lKK2GaL3TE9L4DChkd2c3c0e0`
 
-## Request Body
-
-Although this particular delete operation includes a data payload, typically DELETE requests do not require one. If your API implementation requires additional context, include it as shown below:
-
-```json
-{
-    "userId": 1,
-    "billId": 1,
-    "amount": "100"
-}
-```
-
-- **userId**: The ID of the user associated with the deletion request.
-- **billId**: An identifier related to billing or the task's associated bill.
-- **amount**: Amount pertaining to the transaction or task details.
 
 ## Expected Response
 
