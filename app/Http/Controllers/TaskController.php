@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Task;
 
@@ -15,13 +16,20 @@ class TaskController extends Controller
         $this->request = $request;
     }
 
+    public function viewTasks(){
+        return view('tasks');
+    }
+
     /**
      * Retrieves all tasks and returns them as a JSON response.
      *
      * @return \Illuminate\Http\JsonResponse JSON response containing all tasks.
      */
     public function index(){
-        $tasks = Task::all();
+        $user = Auth::user();
+        $tasks = Task::where('user_id', $user->id)
+              ->orderBy('status', 'asc')
+              ->get();
         return response()->json($tasks);
     }
 
@@ -54,13 +62,14 @@ class TaskController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+        $user = Auth::user();
 
         $task = new Task();
         $task->title = $request->input('title');
         $task->description = $request->input('description');
         $task->status = $request->input('status');
         $task->expiration = $request->input('expiration');
-        $task->user_id = 1;
+        $task->user_id = $user->id;
 
         $task->save();
 
@@ -77,7 +86,10 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $user = Auth::user();
+        $task = Task::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
 
         return response()->json($task); 
     }
@@ -110,8 +122,11 @@ class TaskController extends Controller
                 'errors' => $validator->errors()
             ], 422);
         }
+        $user = Auth::user();
 
-        $task = Task::findOrFail($id);
+        $task = Task::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
         $task->update($request->all());
         return response()->json(['Task updated successfully.']); 
     }
@@ -127,7 +142,10 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
+        $user = Auth::user();
+        $task = Task::where('id', $id)
+            ->where('user_id', $user->id)
+            ->firstOrFail();
         $task->delete();
 
         return response()->json(['Task deleted successfully.']); 
